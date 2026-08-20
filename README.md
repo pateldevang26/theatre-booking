@@ -65,10 +65,12 @@ On Booking:
   defense in depth - a Show can be created validly in the future and
   still be "Scheduled" once its time has actually passed).
 - A seat cannot be booked twice for the same Show across different
+- The total number of seats booked for a Show (across all Confirmed bookings) cannot exceed the linked Screen's Total Seats.
   Confirmed bookings.
 - Total Amount is auto-calculated on save (seats x Show's price), not
   user-enterable.
-
+- The total number of seats booked for a Show (across all Confirmed
+  bookings) cannot exceed the linked Screen's Total Seats.
 ## Viewing today's shows
 
 The Show list view has "Show Date" enabled as both a list column and a
