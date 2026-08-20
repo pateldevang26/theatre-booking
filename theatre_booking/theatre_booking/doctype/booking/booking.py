@@ -15,6 +15,7 @@ class Booking(Document):
 		self.validate_show_is_scheduled()
 		self.validate_show_not_in_past()
 		self.validate_seats_not_already_booked()
+		self.validate_seat_capacity()
 		self.calculate_total_amount()
 
 	def validate_customer_phone(self):
@@ -64,6 +65,32 @@ class Booking(Document):
 		for row in self.seats:
 			if row.seat_number in already_booked_seats:
 				frappe.throw(f"Seat {row.seat_number} is already booked for this show.")
+
+	def validate_seat_capacity(self):
+		screen = frappe.get_doc("Screen", self.show_doc.screen)
+
+		existing_bookings = frappe.get_all(
+			"Booking",
+			filters={
+				"show": self.show,
+				"status": "Confirmed",
+				"name": ["!=", self.name or ""],
+			},
+			pluck="name",
+		)
+
+		total_already_booked = 0
+		for booking_name in existing_bookings:
+			total_already_booked += frappe.db.count("Booking Seat", {"parent": booking_name})
+
+		total_after_this_booking = total_already_booked + len(self.seats)
+
+		if total_after_this_booking > screen.total_seats:
+			frappe.throw(
+				f"Cannot book {len(self.seats)} seat(s). Only "
+				f"{screen.total_seats - total_already_booked} seat(s) remaining "
+				f"on {screen.screen_name} for this show."
+			)
 
 	def calculate_total_amount(self):
 		self.total_amount = len(self.seats) * self.show_doc.price_per_seat
