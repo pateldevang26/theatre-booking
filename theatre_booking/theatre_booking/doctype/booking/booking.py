@@ -30,14 +30,14 @@ class Booking(Document):
 			frappe.throw(f"Cannot book seats for a show that is {self.show_doc.status}.")
 
 	def validate_show_not_in_past(self):
-		# Both sides parsed via get_datetime() from plain strings, so both are
-		# naive datetimes and safely comparable. Mixing now_datetime() (which
-		# can be timezone-aware once a site timezone is set) with a naive
-		# value raises "can't compare offset-naive and offset-aware datetimes".
+		# Strip any timezone info from both sides before comparing. Frappe's
+		# datetime helpers can inconsistently return naive or timezone-aware
+		# values depending on site settings, so we force both to naive here
+		# rather than relying on now_datetime()/get_datetime() to already agree.
 		show_datetime = get_datetime(
 			f"{self.show_doc.show_date} {self.show_doc.show_time}"
-		)
-		current_datetime = get_datetime(now())
+		).replace(tzinfo=None)
+		current_datetime = get_datetime(now()).replace(tzinfo=None)
 		if show_datetime < current_datetime:
 			frappe.throw("Cannot book seats for a show that has already passed.")
 
