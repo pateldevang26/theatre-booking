@@ -58,14 +58,13 @@
    "fieldname": "total_amount",
    "fieldtype": "Currency",
    "label": "Total Amount",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-20 11:20:29.640329",
+ "modified": "2026-08-20 12:02:29.292779",
  "modified_by": "Administrator",
  "module": "Theatre Booking",
  "name": "Booking",
