@@ -8,6 +8,7 @@ class Booking(Document):
 		self.booking_datetime = now_datetime()
 
 	def validate(self):
+		self.validate_customer_phone()
 		self.validate_seats_not_empty()
 		self.validate_no_duplicate_seats_in_this_booking()
 		self.show_doc = frappe.get_doc("Show", self.show)
@@ -15,6 +16,11 @@ class Booking(Document):
 		self.validate_show_not_in_past()
 		self.validate_seats_not_already_booked()
 		self.calculate_total_amount()
+
+	def validate_customer_phone(self):
+		phone = (self.customer_phone or "").strip()
+		if not phone.isdigit() or len(phone) != 10:
+			frappe.throw("Customer Phone must be exactly 10 digits.")
 
 	def validate_seats_not_empty(self):
 		if not self.seats:
@@ -30,8 +36,6 @@ class Booking(Document):
 			frappe.throw(f"Cannot book seats for a show that is {self.show_doc.status}.")
 
 	def validate_show_not_in_past(self):
-		# show_time is a full Datetime field, so no concatenation with
-		# show_date is needed here - just parse it directly.
 		show_datetime = get_datetime(self.show_doc.show_time).replace(tzinfo=None)
 		current_datetime = get_datetime(now()).replace(tzinfo=None)
 		if show_datetime < current_datetime:
