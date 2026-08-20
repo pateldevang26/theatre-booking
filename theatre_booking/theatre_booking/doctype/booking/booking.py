@@ -30,13 +30,9 @@ class Booking(Document):
 			frappe.throw(f"Cannot book seats for a show that is {self.show_doc.status}.")
 
 	def validate_show_not_in_past(self):
-		# Strip any timezone info from both sides before comparing. Frappe's
-		# datetime helpers can inconsistently return naive or timezone-aware
-		# values depending on site settings, so we force both to naive here
-		# rather than relying on now_datetime()/get_datetime() to already agree.
-		show_datetime = get_datetime(
-			f"{self.show_doc.show_date} {self.show_doc.show_time}"
-		).replace(tzinfo=None)
+		# show_time is a full Datetime field, so no concatenation with
+		# show_date is needed here - just parse it directly.
+		show_datetime = get_datetime(self.show_doc.show_time).replace(tzinfo=None)
 		current_datetime = get_datetime(now()).replace(tzinfo=None)
 		if show_datetime < current_datetime:
 			frappe.throw("Cannot book seats for a show that has already passed.")

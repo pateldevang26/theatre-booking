@@ -9,7 +9,7 @@
   "screen",
   "show_date",
   "show_time",
-  "currency_qqur",
+  "price_per_seat",
   "status"
  ],
  "fields": [
@@ -40,23 +40,23 @@
    "reqd": 1
   },
   {
-   "fieldname": "currency_qqur",
-   "fieldtype": "Currency",
-   "label": "Price Per Seat",
-   "reqd": 1
-  },
-  {
    "default": "Scheduled",
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
    "options": "Scheduled\nCancelled\nCompleted"
+  },
+  {
+   "fieldname": "price_per_seat",
+   "fieldtype": "Currency",
+   "label": "Price Per Seat",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-20 11:08:30.254536",
+ "modified": "2026-08-20 12:07:59.955386",
  "modified_by": "Administrator",
  "module": "Theatre Booking",
  "name": "Show",
